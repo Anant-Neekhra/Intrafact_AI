@@ -1,35 +1,41 @@
-import os
-from pathlib import Path
+from intrafact.config import RAW_DATA_DIR
 
-PROJECT_ROOT = Path(__file__).resolve()
-while not (PROJECT_ROOT / ".git").exists():
-    PROJECT_ROOT = PROJECT_ROOT.parent
-
-RAW_DATA_PATH = PROJECT_ROOT / "data/raw/manual"
-
-
-DISPLAY_PATH = RAW_DATA_PATH.relative_to(PROJECT_ROOT)
-
-
-def file_ingestor():
-
-    if not os.path.exists(RAW_DATA_PATH):
-        print(f"no folder {DISPLAY_PATH} found")
-        return
+def ingestor():
+    """
+    Reads all files from the raw data directory and returns a list 
+    of data objects for the normalization layer.
+    """
+    # 1. Check if the directory exists
+    if not RAW_DATA_DIR.exists():
+        print(f"Directory not found: {RAW_DATA_DIR}")
+        return []
     
-    files = os.listdir(RAW_DATA_PATH)
-    print(f"There are {len(files)} files in {DISPLAY_PATH}")
+    # 2. Get all files in the directory
+    files = list(RAW_DATA_DIR.glob("*"))
+    collected_data = []
 
-    for file in files:
-        full_path =  os.path.join(RAW_DATA_PATH, file)
+    for file_path in files:
+        # 3. Process only files (skip hidden folders or sub-directories)
+        if file_path.is_file():
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+                    
+                    # 4. Create a standardized dictionary for this file
+                    data_item = {
+                        "raw_text": content,
+                        "metadata": {
+                            "file_name": file_path.name,
+                            "source_type": "local_file"
+                        }
+                    }
+                    collected_data.append(data_item)
+            except Exception as e:
+                print(f"Failed to read {file_path.name}: {e}")
 
-        with open(full_path,"r",encoding = "utf-8") as f:
-            content = f.read()
-            print(f"file name: {file}")
-            print(f"File content:\n{content}")
-            print("-" * 30)
+    # 5. Return the list of all collected data
+    return collected_data
 
-if __name__ == "--main__":
-    file_ingestor()
-
-   
+if __name__ == "__main__":
+    # For local testing, we still print to see if it works
+    ingestor()
