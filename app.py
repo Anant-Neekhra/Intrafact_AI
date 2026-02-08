@@ -2,7 +2,7 @@ import sys
 from intrafact.ingestion.file_ingestor import ingestor
 from intrafact.normalization.normalizer import TextNormalizer
 from intrafact.processing.chunker import TextChunker 
-from intrafact.processing.embedder import TextEmbedder # <-- New Import
+from intrafact.processing.embedder import TextEmbedder 
 
 def run_pipeline():
     print("-----Starting Pipeline------")
@@ -29,16 +29,16 @@ def run_pipeline():
     for file in raw_data:
         original_file_name = file["metadata"]["file_name"]
         print(f"Normalising {original_file_name}")
-
+        # Step 4 normalising
         try:
             normalized_data = norm.normalize(
                 file['raw_text'], 
                 file['metadata']
             )
-            
+            # Step 3 chunking
             chunks = chunker.process_chunks(normalized_data)
             print(f"   ↳ Split into {len(chunks)} chunks.")
-
+            # Step 4 embedding
             chunks_with_vectors = embedder.embed_chunks(chunks)
             print(f"   ↳ Generated {len(chunks_with_vectors[0]['embedding'])}-dimension vectors.")
 
