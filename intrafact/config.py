@@ -11,6 +11,10 @@ while not (PROJECT_ROOT/"Readme.md").exists():
 DATA_DIR = PROJECT_ROOT/"data"
 RAW_DATA_DIR = DATA_DIR/"raw"
 PROCESSED_DATA_DIR = DATA_DIR/"processed"
+CHROMA_DB_DIR = DATA_DIR/"chroma_db"
+SQLITE_DB_DIR = DATA_DIR/"metadata.db"
 
 os.makedirs(RAW_DATA_DIR, exist_ok=True)
 os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
+os.makedirs(CHROMA_DB_DIR, exist_ok=True)
+os.makedirs(SQLITE_DB_DIR, exist_ok=True)

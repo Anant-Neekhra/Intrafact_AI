@@ -1,4 +1,11 @@
+import hashlib
 from intrafact.config import RAW_DATA_DIR
+
+def calculate_file_hash(content):
+    """
+    Calculates the SHA256 hash of the given content string.
+    """
+    return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
 def ingestor():
     """
@@ -20,13 +27,15 @@ def ingestor():
             try:
                 with open(file_path, "r", encoding="utf-8") as f:
                     content = f.read()
-                    
+
+                    file_hash = calculate_file_hash(content)                    
                     # 4. Create a standardized dictionary for this file
                     data_item = {
                         "raw_text": content,
                         "metadata": {
                             "file_name": file_path.name,
-                            "source_type": "local_file"
+                            "source_type": "local_file",
+                            "file_hash": file_hash
                         }
                     }
                     collected_data.append(data_item)
