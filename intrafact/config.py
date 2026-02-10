@@ -18,3 +18,4 @@ os.makedirs(RAW_DATA_DIR, exist_ok=True)
 os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
 os.makedirs(CHROMA_DB_DIR, exist_ok=True)
 # Removed the SQL part because it was giving errors
+
